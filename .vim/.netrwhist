@@ -1,0 +1,10 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =8
+let g:netrw_dirhist_1='/Users/KeitaAshida/.vim'
+let g:netrw_dirhist_2='/Users/KeitaAshida/Dropbox/3Y/exp01/exp01-2'
+let g:netrw_dirhist_3='/Users/KeitaAshida/Dropbox/3Y/exp01/exp01-3/conf'
+let g:netrw_dirhist_4='/Users/KeitaAshida/Dropbox/3Y/exp01/exp01-3'
+let g:netrw_dirhist_5='/Users/KeitaAshida/Dropbox/3Y/exp01'
+let g:netrw_dirhist_6='/Users/KeitaAshida/Dropbox/3Y/exp01/exp01-1'
+let g:netrw_dirhist_7='/Users/KeitaAshida/Obj-C/0521'
+let g:netrw_dirhist_8='/Users/KeitaAshida/.vim'
