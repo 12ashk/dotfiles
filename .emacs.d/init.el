@@ -12,7 +12,7 @@
 	(define-key iswitchb-mode-map "\C-f" 'iswitchb-next-match)
 	(define-key iswitchb-mode-map "\C-b" 'iswitchb-prev-match)))
 (show-paren-mode)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/elisp/themes")
+(add-to-list 'load-path "~/.emacs.d/elisp/themes")
 (require 'color-theme)
 (color-theme-initialize)
 (custom-set-variables
@@ -57,7 +57,8 @@
   (slime-kill-all-buffers))
 
 ;;Lisp処理系のコマンド
-(setq inferior-lisp-program "/usr/local/Cellar/sbcl/1.1.4/bin/sbcl")
+;;(setq inferior-lisp-program "/usr/local/Cellar/sbcl/1.1.4/bin/sbcl")
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
 ;; SLIMEがある場所をEmacsのロードパスに追加
 (add-to-list 'load-path "~/.emacs.d/slime")
 ;; SLIMEを実行するときに自動的にロードさせる
@@ -99,6 +100,12 @@
 						(t
 						  (message "Quit")
 						  (throw 'end-flag t)))))))
+;;pain-move
+(global-set-key (kbd "C-x h")  'windmove-left)
+(global-set-key (kbd "C-x j")  'windmove-down)
+(global-set-key (kbd "C-x i")    'windmove-up)
+(global-set-key (kbd "C-x l") 'windmove-right)
+
 ;;scheme-mode-hook
 (defvar ac-source-scheme
   '((candidates
