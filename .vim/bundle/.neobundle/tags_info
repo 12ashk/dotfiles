@@ -1,4 +1,4 @@
 neobundle.vim
+neocomplete.vim
 nerdtree
 recognize_charcode.vim
-vim-indent-guides

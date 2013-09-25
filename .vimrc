@@ -1,5 +1,3 @@
-set nocompatible               " Be iMproved
-
 if has('vim_starting')
 	set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
@@ -11,14 +9,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'banyan/recognize_charcode.vim'
 
-NeoBundle 'nathanaelkane/vim-indent-guides'
-let g:indent_guides_guide_size = 1
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=239
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=239
-nnoremap <silent> [toggle]i  :IndentGuidesToggle<CR>
-
 NeoBundle 'scrooloose/nerdtree'
 nmap <Leader>n :NERDTreeToggle<CR>
 let NERDTreeShowHidden = 1
@@ -26,28 +16,38 @@ let NERDTreeAutoDeleteBuffer = 1
 autocmd VimEnter * NERDTree ./
 autocmd VimEnter * wincmd l
 
+set nocompatible
 set tabstop=4
 set smarttab
 set smartindent
 set cindent
 set autoindent
-set nosmartcase
+set smartcase
+set ignorecase
+set wrapscan
 set shiftwidth=4
 set incsearch
 set showmatch
 set showcmd
 set hlsearch
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set number
 set wildmenu
 set noswapfile
+"set visualbell t_vb=
 set laststatus=2
 set statusline=[%Y][%{&fileencoding}:%{&ff}]\%F\%=[\ \%l:\ \%c]--%p%%--
 set ruler
+set clipboard=unnamed
+set mouse=a
+set guioptions+=a
+set ttymouse=xterm2
+set backspace=2
 syntax on
 
-"let g:solarized_termcolors=256
+let g:solarized_termcolors=256
 set background=dark
-colorscheme hybrid
+colorschem desert
 
 filetype plugin indent on
 set fileencoding=utf-8
@@ -75,25 +75,11 @@ endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 " }}} Autocompletion using the TAB key
 
-let g:neocomplcacheenableatstartup = 1
 let g:echodoc_enable_at_startup = 1
 
 imap <C-e> <END> 
 imap <C-a> <HOME>
 
-""
-"" neocomplcache & neosnippet
-""
-let g:neocomplcache_enable_at_startup = 1
-""imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-""smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-" neocomplcache
-let g:neocomplcache_enable_at_startup = 1 " 起動時に有効化
-"inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" neocomplcache
-let g:neocomplcache_enable_at_startup = 1 " 起動時に有効化
 
 ""let g:filetype_m = 'objc'
 
@@ -122,5 +108,41 @@ inoremap <C-h> <Backspace>
 inoremap <C-k> <C-o>
 inoremap <C-n> <Down>
 inoremap <C-p> <Up>
+
+if has('lua') && ( (v:version == 703 && has('patch885')) || v:version == 704 )
+  NeoBundleLazy 'Shougo/neocomplete.vim', {
+        \ 'autoload': {
+        \   'insert': 1,
+        \ }}
+  let s:hooks = neobundle#get_hooks('neocomplete.vim')
+  function! s:hooks.on_source(bundle)
+    " Disable AutoComplPop.
+    let g:acp_enableAtStartup = 0
+    " Use neocomplete.
+    let g:neocomplete#enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplete#enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplete#sources#syntax#min_keyword_length = 3
+    let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+  endfunction
+else
+  NeoBundleLazy 'Shougo/neocomplcache.vim', {
+        \ 'autoload': {
+        \   'insert': 1,
+        \ }}
+  let s:hooks = neobundle#get_hooks('neocomplcache.vim')
+  function! s:hooks.on_source(bundle)
+    " Disable AutoComplPop.
+    let g:acp_enableAtStartup = 0
+    " Use neocomplcache.
+    let g:neocomplcache_enable_at_startup = 1
+    " Use smartcase.
+    let g:neocomplcache_enable_smart_case = 1
+    " Set minimum syntax keyword length.
+    let g:neocomplcache_min_syntax_length = 3
+    let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+  endfunction
+endif
 
 NeoBundleCheck
