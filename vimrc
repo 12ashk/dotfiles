@@ -43,7 +43,11 @@ set mouse=a
 set guioptions+=a
 set ttymouse=xterm2
 set backspace=2
+set shellslash
+set grepprg=grep\ -nH\ $*et grepprg=grep\ -nH\ $*
 syntax on
+set mouse=a
+set ttymouse=xterm2
 
 let g:solarized_termcolors=256
 set background=dark
@@ -80,11 +84,7 @@ let g:echodoc_enable_at_startup = 1
 imap <C-e> <END> 
 imap <C-a> <HOME>
 
-
 ""let g:filetype_m = 'objc'
-
-set mouse=a
-set ttymouse=xterm2
 
 if has('gui_running')
 	set mousemodel=popup
@@ -144,5 +144,25 @@ else
     let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
   endfunction
 endif
+
+""" Vim-LaTeX 
+"NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+"let g:Tex_AutoFolding = 0
+"let g:tex_flavor='latex'
+"let g:Imap_UsePlaceHolders = 1
+"let g:Imap_DeleteEmptyPlaceHolders = 1
+"let g:Imap_StickyPlaceHolders = 0
+"let g:Tex_DefaultTargetFormat = 'dvi'
+""let g:Tex_FormatDependency_pdf = 'pdf'
+""let g:Tex_FormatDependency_ps = 'dvi,ps'
+"let g:Tex_CompileRule_pdf = '/usr/texbin/dvipdfmx $*.dvi'
+""let g:Tex_CompileRule_ps = '/usr/texbin/dvips -Ppdf -o $*.ps $*.dvi'
+"let g:Tex_CompileRule_dvi = '/usr/texbin/platex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
+""let g:Tex_BibtexFlavor = '/usr/texbin/pbibtex'
+""let g:Tex_MakeIndexFlavor = '/usr/texbin/mendex $*.idx'
+"let g:Tex_UseEditorSettingInDVIViewer = 1
+"let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
+""let g:Tex_ViewRule_ps = '/usr/bin/open'
+"let g:Tex_ViewRule_dvi = '/usr/bin/open'
 
 NeoBundleCheck

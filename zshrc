@@ -52,6 +52,9 @@ sudo_path=({/usr/local,/usr,}/sbin(N-/))
 
 export PYTHONPATH=$HOME/.pythonbrew/current:$(brew --prefix)/lib/python2.7/site-packages:$PYTHONPATH
 #export WORKON_HOME=$HOME/.virtualenvs
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+export CC=/usr/bin/gcc
 export GNUTERM=x11
 
 export LIBRARY_PATH=$LIBRARY_PATH:$HOME/local/bin
