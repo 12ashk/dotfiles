@@ -6,15 +6,54 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
-
+NeoBundle 'yonchu/accelerated-smooth-scroll'
 NeoBundle 'banyan/recognize_charcode.vim'
+NeoBundle 'kana/vim-smartword'
+NeoBundle 'vim-scripts/Pydiction'
+NeoBundle 'yuroyoro/vim-python'
+NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'Shougo/vimproc.vim'
+NeoBundle 'scrooloose/syntastic.git'
+NeoBundle 'tpope/vim-surround'
 
-NeoBundle 'scrooloose/nerdtree'
-nmap <Leader>n :NERDTreeToggle<CR>
-let NERDTreeShowHidden = 1
-let NERDTreeAutoDeleteBuffer = 1
-autocmd VimEnter * NERDTree ./
-autocmd VimEnter * wincmd l
+" NERD_commenter.vim
+NeoBundle 'scrooloose/nerdcommenter.git'
+let g:NERDCreateDefaultMappings = 0
+let NERDSpaceDelims = 1
+nmap <Leader>/ <Plug>NERDCommenterToggle
+vmap <Leader>/ <Plug>NERDCommenterToggle
+nmap <Leader>/a <Plug>NERDCommenterAppend
+nmap <leader>/9 <Plug>NERDCommenterToEOL
+vmap <Leader>/s <Plug>NERDCommenterSexy
+vmap <Leader>/b <Plug>NERDCommenterMinimal
+
+NeoBundle 'Shougo/vimfiler.vim'
+"vimデフォルトのエクスプローラをvimfilerで置き換える
+let g:vimfiler_as_default_explorer = 1
+""セーフモードを無効にした状態で起動する
+let g:vimfiler_safe_mode_by_default = 0
+"現在開いているバッファのディレクトリを開く
+nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
+"現在開いているバッファをIDE風に開く
+nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+ 
+" ctags
+NeoBundle "vim-scripts/taglist.vim"
+set tags=tags
+let Tlist_Ctags_Cmd = "/usr/local/bin/ctags"  " ctagsのコマンド
+let Tlist_Show_One_File = 1                         " 現在表示中のファイルのみのタグしか表示しない
+let Tlist_Use_Right_Window = 1                    " 右側にtag listのウインドうを表示する
+let Tlist_Exit_OnlyWindow = 1                      " taglistのウインドウだけならVimを閉じる
+map <silent> <leader>l :TlistToggle<CR> 
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'h1mesuke/unite-outline'
+" I use unite instead of nerdtree
+" NeoBundle 'scrooloose/nerdtree'
+" nmap <Leader>n :NERDTreeToggle<CR>
+" let NERDTreeShowHidden = 1
+" let NERDTreeAutoDeleteBuffer = 1
+" autocmd VimEnter * NERDTree ./
+" autocmd VimEnter * wincmd l
 
 set nocompatible
 set tabstop=4
@@ -34,11 +73,11 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set number
 set wildmenu
 set noswapfile
-"set visualbell t_vb=
+set visualbell t_vb=
 set laststatus=2
 set statusline=[%Y][%{&fileencoding}:%{&ff}]\%F\%=[\ \%l:\ \%c]--%p%%--
 set ruler
-set clipboard=unnamed
+set clipboard=unnamed,autoselect
 set mouse=a
 set guioptions+=a
 set ttymouse=xterm2
@@ -146,23 +185,23 @@ else
 endif
 
 """ Vim-LaTeX 
-"NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
-"let g:Tex_AutoFolding = 0
-"let g:tex_flavor='latex'
-"let g:Imap_UsePlaceHolders = 1
-"let g:Imap_DeleteEmptyPlaceHolders = 1
-"let g:Imap_StickyPlaceHolders = 0
-"let g:Tex_DefaultTargetFormat = 'dvi'
-""let g:Tex_FormatDependency_pdf = 'pdf'
-""let g:Tex_FormatDependency_ps = 'dvi,ps'
-"let g:Tex_CompileRule_pdf = '/usr/texbin/dvipdfmx $*.dvi'
-""let g:Tex_CompileRule_ps = '/usr/texbin/dvips -Ppdf -o $*.ps $*.dvi'
-"let g:Tex_CompileRule_dvi = '/usr/texbin/platex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
-""let g:Tex_BibtexFlavor = '/usr/texbin/pbibtex'
-""let g:Tex_MakeIndexFlavor = '/usr/texbin/mendex $*.idx'
-"let g:Tex_UseEditorSettingInDVIViewer = 1
-"let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
-""let g:Tex_ViewRule_ps = '/usr/bin/open'
-"let g:Tex_ViewRule_dvi = '/usr/bin/open'
+NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+let g:Tex_AutoFolding = 0
+let g:tex_flavor='latex'
+let g:Imap_UsePlaceHolders = 1
+let g:Imap_DeleteEmptyPlaceHolders = 1
+let g:Imap_StickyPlaceHolders = 0
+let g:Tex_DefaultTargetFormat = 'dvi'
+"let g:Tex_FormatDependency_pdf = 'pdf'
+"let g:Tex_FormatDependency_ps = 'dvi,ps'
+let g:Tex_CompileRule_pdf = '/usr/texbin/dvipdfmx $*.dvi'
+"let g:Tex_CompileRule_ps = '/usr/texbin/dvips -Ppdf -o $*.ps $*.dvi'
+let g:Tex_CompileRule_dvi = '/usr/texbin/platex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_BibtexFlavor = '/usr/texbin/pbibtex'
+"let g:Tex_MakeIndexFlavor = '/usr/texbin/mendex $*.idx'
+let g:Tex_UseEditorSettingInDVIViewer = 1
+let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
+"let g:Tex_ViewRule_ps = '/usr/bin/open'
+let g:Tex_ViewRule_dvi = '/usr/bin/open'
 
 NeoBundleCheck
