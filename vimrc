@@ -6,15 +6,16 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'yonchu/accelerated-smooth-scroll'
 NeoBundle 'banyan/recognize_charcode.vim'
 NeoBundle 'kana/vim-smartword'
 NeoBundle 'vim-scripts/Pydiction'
 NeoBundle 'yuroyoro/vim-python'
-NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'Shougo/vimproc.vim'
+NeoBundle 'Shougo/echodoc'
+let g:echodoc_enable_at_startup = 1
 NeoBundle 'scrooloose/syntastic.git'
 NeoBundle 'tpope/vim-surround'
+NeoBundle 'vim-scripts/YankRing.vim'
 
 " NERD_commenter.vim
 NeoBundle 'scrooloose/nerdcommenter.git'
@@ -36,7 +37,7 @@ let g:vimfiler_safe_mode_by_default = 0
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
 "現在開いているバッファをIDE風に開く
 nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
- 
+
 " ctags
 NeoBundle "vim-scripts/taglist.vim"
 set tags=tags
@@ -58,39 +59,44 @@ NeoBundle 'h1mesuke/unite-outline'
 set nocompatible
 set tabstop=4
 set smarttab
-set smartindent
 set cindent
-set autoindent
 set smartcase
 set ignorecase
 set wrapscan
 set shiftwidth=4
 set incsearch
-set showmatch
-set showcmd
 set hlsearch
+set showmatch
+set matchtime=1
+set showcmd
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set number
 set wildmenu
+set backup
+set backupdir=~/.vim_backup
 set noswapfile
-set visualbell t_vb=
+set visualbell
 set laststatus=2
 set statusline=[%Y][%{&fileencoding}:%{&ff}]\%F\%=[\ \%l:\ \%c]--%p%%--
 set ruler
 set clipboard=unnamed,autoselect
 set mouse=a
-set guioptions+=a
 set ttymouse=xterm2
 set backspace=2
-set shellslash
-set grepprg=grep\ -nH\ $*et grepprg=grep\ -nH\ $*
 syntax on
-set mouse=a
-set ttymouse=xterm2
+"set grepprg=grep\ -nH\ $*et grepprg=grep\ -nH\ $*
+""let g:filetype_m = 'objc'
 
 let g:solarized_termcolors=256
 set background=dark
 colorschem desert
+
+set guioptions+=a
+if has('gui_running')
+	set mousemodel=popup
+	set nomousefocus
+	set mousehide
+endif
 
 filetype plugin indent on
 set fileencoding=utf-8
@@ -118,18 +124,7 @@ endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 " }}} Autocompletion using the TAB key
 
-let g:echodoc_enable_at_startup = 1
 
-imap <C-e> <END> 
-imap <C-a> <HOME>
-
-""let g:filetype_m = 'objc'
-
-if has('gui_running')
-	set mousemodel=popup
-	set nomousefocus
-	set mousehide
-endif
 " Emacs-like keybind
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
@@ -144,44 +139,44 @@ inoremap <C-d> <Del>
 inoremap <C-e> <End>
 inoremap <C-f> <Right>
 inoremap <C-h> <Backspace>
-inoremap <C-k> <C-o>
-inoremap <C-n> <Down>
-inoremap <C-p> <Up>
+"inoremap <C-k> <C-o>
+"inoremap <C-n> <Down>
+"inoremap <C-p> <Up>
 
 if has('lua') && ( (v:version == 703 && has('patch885')) || v:version == 704 )
-  NeoBundleLazy 'Shougo/neocomplete.vim', {
-        \ 'autoload': {
-        \   'insert': 1,
-        \ }}
-  let s:hooks = neobundle#get_hooks('neocomplete.vim')
-  function! s:hooks.on_source(bundle)
-    " Disable AutoComplPop.
-    let g:acp_enableAtStartup = 0
-    " Use neocomplete.
-    let g:neocomplete#enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplete#enable_smart_case = 1
-    " Set minimum syntax keyword length.
-    let g:neocomplete#sources#syntax#min_keyword_length = 3
-    let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-  endfunction
+	NeoBundleLazy 'Shougo/neocomplete.vim', {
+				\ 'autoload': {
+				\   'insert': 1,
+				\ }}
+	let s:hooks = neobundle#get_hooks('neocomplete.vim')
+	function! s:hooks.on_source(bundle)
+		" Disable AutoComplPop.
+		let g:acp_enableAtStartup = 0
+		" Use neocomplete.
+		let g:neocomplete#enable_at_startup = 1
+		" Use smartcase.
+		let g:neocomplete#enable_smart_case = 1
+		" Set minimum syntax keyword length.
+		let g:neocomplete#sources#syntax#min_keyword_length = 3
+		let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+	endfunction
 else
-  NeoBundleLazy 'Shougo/neocomplcache.vim', {
-        \ 'autoload': {
-        \   'insert': 1,
-        \ }}
-  let s:hooks = neobundle#get_hooks('neocomplcache.vim')
-  function! s:hooks.on_source(bundle)
-    " Disable AutoComplPop.
-    let g:acp_enableAtStartup = 0
-    " Use neocomplcache.
-    let g:neocomplcache_enable_at_startup = 1
-    " Use smartcase.
-    let g:neocomplcache_enable_smart_case = 1
-    " Set minimum syntax keyword length.
-    let g:neocomplcache_min_syntax_length = 3
-    let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-  endfunction
+	NeoBundleLazy 'Shougo/neocomplcache.vim', {
+				\ 'autoload': {
+				\   'insert': 1,
+				\ }}
+	let s:hooks = neobundle#get_hooks('neocomplcache.vim')
+	function! s:hooks.on_source(bundle)
+		" Disable AutoComplPop.
+		let g:acp_enableAtStartup = 0
+		" Use neocomplcache.
+		let g:neocomplcache_enable_at_startup = 1
+		" Use smartcase.
+		let g:neocomplcache_enable_smart_case = 1
+		" Set minimum syntax keyword length.
+		let g:neocomplcache_min_syntax_length = 3
+		let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+	endfunction
 endif
 
 """ Vim-LaTeX 
@@ -203,5 +198,69 @@ let g:Tex_UseEditorSettingInDVIViewer = 1
 let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
 "let g:Tex_ViewRule_ps = '/usr/bin/open'
 let g:Tex_ViewRule_dvi = '/usr/bin/open'
+
+"lightline
+NeoBundle 'itchyny/lightline.vim'
+let g:lightline = {
+			\ 'colorscheme': 'wombat',
+			\ 'mode_map': {'c': 'NORMAL'},
+			\ 'active': {
+			\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+			\ },
+			\ 'component_function': {
+			\   'modified': 'MyModified',
+			\   'readonly': 'MyReadonly',
+			\   'fugitive': 'MyFugitive',
+			\   'filename': 'MyFilename',
+			\   'fileformat': 'MyFileformat',
+			\   'filetype': 'MyFiletype',
+			\   'fileencoding': 'MyFileencoding',
+			\   'mode': 'MyMode'
+			\ }
+			\ }
+
+function! MyModified()
+	return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+	return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+endfunction
+
+function! MyFilename()
+	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+				\  &ft == 'unite' ? unite#get_status_string() :
+				\  &ft == 'vimshell' ? vimshell#get_status_string() :
+				\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+				\ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+	try
+		if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+			return fugitive#head()
+		endif
+	catch
+	endtry
+	return ''
+endfunction
+
+function! MyFileformat()
+	return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+	return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+	return winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+"end lightline setting
 
 NeoBundleCheck
