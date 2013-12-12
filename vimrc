@@ -8,6 +8,8 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'banyan/recognize_charcode.vim'
 NeoBundle 'kana/vim-smartword'
+"NeoBundle 'acx0/vimcoder'
+autocmd BufNewFile,BufRead *.cs set filetype=python
 NeoBundle 'vim-scripts/Pydiction'
 NeoBundle 'yuroyoro/vim-python'
 NeoBundle 'Shougo/vimproc.vim'
@@ -15,7 +17,6 @@ NeoBundle 'Shougo/echodoc'
 let g:echodoc_enable_at_startup = 1
 NeoBundle 'scrooloose/syntastic.git'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'vim-scripts/YankRing.vim'
 
 " NERD_commenter.vim
 NeoBundle 'scrooloose/nerdcommenter.git'
@@ -35,47 +36,28 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 "現在開いているバッファのディレクトリを開く
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
-"現在開いているバッファをIDE風に開く
-nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
-
-" ctags
-NeoBundle "vim-scripts/taglist.vim"
-set tags=tags
-let Tlist_Ctags_Cmd = "/usr/local/bin/ctags"  " ctagsのコマンド
-let Tlist_Show_One_File = 1                         " 現在表示中のファイルのみのタグしか表示しない
-let Tlist_Use_Right_Window = 1                    " 右側にtag listのウインドうを表示する
-let Tlist_Exit_OnlyWindow = 1                      " taglistのウインドウだけならVimを閉じる
-map <silent> <leader>l :TlistToggle<CR> 
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'h1mesuke/unite-outline'
-" I use unite instead of nerdtree
-" NeoBundle 'scrooloose/nerdtree'
-" nmap <Leader>n :NERDTreeToggle<CR>
-" let NERDTreeShowHidden = 1
-" let NERDTreeAutoDeleteBuffer = 1
-" autocmd VimEnter * NERDTree ./
-" autocmd VimEnter * wincmd l
 
 set nocompatible
-set tabstop=4
 set smarttab
 set cindent
 set smartcase
 set ignorecase
 set wrapscan
+set tabstop=4
 set shiftwidth=4
 set incsearch
 set hlsearch
 set showmatch
 set matchtime=1
 set showcmd
+set noexpandtab
+set softtabstop=0
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set number
 set wildmenu
 set backup
 set backupdir=~/.vim_backup
 set noswapfile
-set visualbell
 set laststatus=2
 set statusline=[%Y][%{&fileencoding}:%{&ff}]\%F\%=[\ \%l:\ \%c]--%p%%--
 set ruler
@@ -84,7 +66,6 @@ set mouse=a
 set ttymouse=xterm2
 set backspace=2
 syntax on
-"set grepprg=grep\ -nH\ $*et grepprg=grep\ -nH\ $*
 ""let g:filetype_m = 'objc'
 
 let g:solarized_termcolors=256
@@ -96,6 +77,8 @@ if has('gui_running')
 	set mousemodel=popup
 	set nomousefocus
 	set mousehide
+	set background=dark
+	colorschem solarized
 endif
 
 filetype plugin indent on
@@ -120,28 +103,34 @@ function! InsertTabWrapper()
 		end
 	endif
 endfunction
-" Remap the tab key to select action with InsertTabWrapper
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-" }}} Autocompletion using the TAB key
 
+" Remap the tab key to select action with InsertTabWrapper
+"inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+""" keybind for neocomplcache
+" <TAB>: completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
 
 " Emacs-like keybind
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 cnoremap <C-d> <Del>
 cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <C-h> <Backspace>
 cnoremap <C-k> <C-\>e
 inoremap <C-a> <Home>
-inoremap <C-b> <Left>
+inoremap <C-p> <Up>
+inoremap <C-n> <Down>
 inoremap <C-d> <Del>
 inoremap <C-e> <End>
 inoremap <C-f> <Right>
 inoremap <C-h> <Backspace>
-"inoremap <C-k> <C-o>
-"inoremap <C-n> <Down>
-"inoremap <C-p> <Up>
 
 if has('lua') && ( (v:version == 703 && has('patch885')) || v:version == 704 )
 	NeoBundleLazy 'Shougo/neocomplete.vim', {
@@ -191,7 +180,8 @@ let g:Tex_DefaultTargetFormat = 'dvi'
 "let g:Tex_FormatDependency_ps = 'dvi,ps'
 let g:Tex_CompileRule_pdf = '/usr/texbin/dvipdfmx $*.dvi'
 "let g:Tex_CompileRule_ps = '/usr/texbin/dvips -Ppdf -o $*.ps $*.dvi'
-let g:Tex_CompileRule_dvi = '/usr/texbin/platex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
+"let g:Tex_CompileRule_dvi = '/usr/texbin/platex -synctex=1 -interaction=nonstopmode -file-line-error-style $*'
+let g:Tex_CompileRule_dvi = '/usr/texbin/platex -interaction=nonstopmode -file-line-error-style $*'
 "let g:Tex_BibtexFlavor = '/usr/texbin/pbibtex'
 "let g:Tex_MakeIndexFlavor = '/usr/texbin/mendex $*.idx'
 let g:Tex_UseEditorSettingInDVIViewer = 1
