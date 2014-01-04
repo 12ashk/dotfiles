@@ -8,15 +8,13 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'banyan/recognize_charcode.vim'
 NeoBundle 'kana/vim-smartword'
-"NeoBundle 'acx0/vimcoder'
-autocmd BufNewFile,BufRead *.cs set filetype=python
 NeoBundle 'vim-scripts/Pydiction'
-NeoBundle 'yuroyoro/vim-python'
-NeoBundle 'Shougo/vimproc.vim'
 NeoBundle 'Shougo/echodoc'
 let g:echodoc_enable_at_startup = 1
-NeoBundle 'scrooloose/syntastic.git'
 NeoBundle 'tpope/vim-surround'
+autocmd BufNewFile,BufRead *.cs set filetype=python
+NeoBundle 'scrooloose/syntastic.git'
+NeoBundle 'Shougo/vimproc'
 
 " NERD_commenter.vim
 NeoBundle 'scrooloose/nerdcommenter.git'
