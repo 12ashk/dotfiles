@@ -8,13 +8,19 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'banyan/recognize_charcode.vim'
 NeoBundle 'kana/vim-smartword'
-NeoBundle 'vim-scripts/Pydiction'
-NeoBundle 'Shougo/echodoc'
 let g:echodoc_enable_at_startup = 1
 NeoBundle 'tpope/vim-surround'
 autocmd BufNewFile,BufRead *.cs set filetype=python
 NeoBundle 'scrooloose/syntastic.git'
 NeoBundle 'Shougo/vimproc'
+
+" Vim-indent-guides
+NeoBundle "nathanaelkane/vim-indent-guides"
+let s:hooks = neobundle#get_hooks("vim-indent-guides")
+function! s:hooks.on_source(bundle)
+	  let g:indent_guides_guide_size = 1
+    IndentGuidesEnable
+endfunction
 
 " NERD_commenter.vim
 NeoBundle 'scrooloose/nerdcommenter.git'
@@ -27,6 +33,7 @@ nmap <leader>/9 <Plug>NERDCommenterToEOL
 vmap <Leader>/s <Plug>NERDCommenterSexy
 vmap <Leader>/b <Plug>NERDCommenterMinimal
 
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler.vim'
 "vimデフォルトのエクスプローラをvimfilerで置き換える
 let g:vimfiler_as_default_explorer = 1
@@ -102,9 +109,6 @@ function! InsertTabWrapper()
 	endif
 endfunction
 
-" Remap the tab key to select action with InsertTabWrapper
-"inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
 """ keybind for neocomplcache
 " <TAB>: completion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -112,6 +116,8 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><C-g>     neocomplete#undo_completion()
 inoremap <expr><C-l>     neocomplete#complete_common_string()
 
+" new line with Enter key
+noremap <CR><CR> o<ESC>
 " Emacs-like keybind
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
