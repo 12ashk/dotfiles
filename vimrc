@@ -18,8 +18,8 @@ NeoBundle 'Shougo/vimproc'
 NeoBundle "nathanaelkane/vim-indent-guides"
 let s:hooks = neobundle#get_hooks("vim-indent-guides")
 function! s:hooks.on_source(bundle)
-	  let g:indent_guides_guide_size = 1
-    IndentGuidesEnable
+	let g:indent_guides_guide_size = 1
+	IndentGuidesEnable
 endfunction
 
 " NERD_commenter.vim
@@ -33,6 +33,7 @@ nmap <leader>/9 <Plug>NERDCommenterToEOL
 vmap <Leader>/s <Plug>NERDCommenterSexy
 vmap <Leader>/b <Plug>NERDCommenterMinimal
 
+"setting for vimfiler
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler.vim'
 "vimデフォルトのエクスプローラをvimfilerで置き換える
@@ -41,6 +42,8 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 "現在開いているバッファのディレクトリを開く
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
+
+
 
 set nocompatible
 set smarttab
