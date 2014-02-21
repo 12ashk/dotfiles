@@ -1,6 +1,8 @@
 ;; setting for evil
 ;; scroll with C-u
 (setq evil-want-C-u-scroll t)
+;; remaping from C-z
+(setq evil-toggle-key "C-_")
 ;; emacs directory
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
