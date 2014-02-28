@@ -1,4 +1,13 @@
+lightline.vim
 neobundle.vim
-neocomplete.vim
-nerdtree
+neocomplcache.vim
+nerdcommenter
 recognize_charcode.vim
+syntastic
+unite.vim
+vim-indent-guides
+vim-latex
+vim-smartword
+vim-surround
+vimfiler.vim
+vimproc
