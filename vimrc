@@ -43,8 +43,6 @@ let g:vimfiler_safe_mode_by_default = 0
 "現在開いているバッファのディレクトリを開く
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
 
-
-
 set nocompatible
 set smarttab
 set cindent
