@@ -7,6 +7,8 @@
 (package-initialize)
 (package-refresh-contents)
 
+(setq ns-command-modifier 'meta)
+
 ;; install packages by package.el
 (mapc
   (lambda (package)
@@ -92,8 +94,22 @@
   '(show-paren-mode t)
   '(tab-width 4))
 
-;;Lisp処理系のコマンド
-;;(setq inferior-lisp-program "/usr/local/Cellar/sbcl/1.1.4/bin/sbcl")
+;; clojure
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(require 'ac-nrepl)
+(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+;(add-hook 'cider-mode-hook 'ac-nrepl-setup)
+(add-hook 'clojure-mode-hook 'cider-mode)
+(eval-after-load "auto-complete"
+				 '(add-to-list 'ac-modes 'cider-repl-mode))
+;; pareditの設定
+(require 'paredit)
+(dolist (hook '(cider-repl-mode-hook
+				 clojure-mode-hook))
+  (add-hook hook 'paredit-mode))
+
+;;CL
+(setq inferior-lisp-program "/usr/local/Cellar/sbcl/1.1.4/bin/sbcl")
 (setq inferior-lisp-program "/usr/local/bin/sbcl")
 ;; SLIMEがある場所をEmacsのロードパスに追加
 (add-to-list 'load-path "~/.emacs.d/slime")
@@ -102,7 +118,7 @@
 ;; どのcontribパッケージを読み込むかの設定
 (slime-setup '(slime-repl slime-fancy slime-banner))
 (setq slime-net-coding-system 'utf-8-unix)
-;; SLIME終了のための関数
+;; SLIME終了
 (defun slime-smart-quit ()
   (interactive)
   (when (slime-connected-p)

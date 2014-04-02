@@ -13,6 +13,7 @@ NeoBundle 'tpope/vim-surround'
 autocmd BufNewFile,BufRead *.cs set filetype=python
 NeoBundle 'scrooloose/syntastic.git'
 NeoBundle 'Shougo/vimproc'
+NeoBundle 'Align'
 
 " Vim-indent-guides
 NeoBundle "nathanaelkane/vim-indent-guides"
