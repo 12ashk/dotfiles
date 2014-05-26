@@ -61,3 +61,11 @@ export LIBRARY_PATH=$LIBRARY_PATH:$HOME/local/bin
 export C_INCLUDE_PATH=$HOME/local/include:/usr/include/python2.7
 export CPLUS_INCLUDE_PATH=$HOME/local/include
 export CPATH=$CPATH:/opt/local/include
+
+if [ "$TMUX" = "" ]; then
+    tmux attach;
+    # detachしてない場合
+    if [ $? ]; then
+	    tmux;
+	fi
+fi
