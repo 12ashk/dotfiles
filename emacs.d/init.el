@@ -5,24 +5,25 @@
 (add-to-list 'package-archives
 			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
-(package-refresh-contents)
-
-(setq ns-command-modifier 'meta)
-
-;; install packages by package.el
-(mapc
-  (lambda (package)
-	(or (package-installed-p package)
-		(package-install package)))
-  '(
+(when (not package-archive-contents)
+  (package-refresh-contents))
+(dolist (p '(
 	auto-complete
 	auto-complete-clang
 	evil
 	color-theme
 	color-theme-solarized
-	twittering-mode
-	w3m
+	highlight-indentation
+	cider
+	clojure-mode
+	ac-nrepl
+	clojure-cheatsheet
+    clojure-snippets
+	paredit
+	slime
 	))
+ (when (not (package-installed-p p))
+      (package-install p)))
 
 (require 'install-elisp)
 (setq install-elisp-repository-directory "~/.emacs.d/elisp/")
@@ -37,8 +38,14 @@
 
 (global-auto-complete-mode t)
 
+(require 'highlight-indentation)
+(setq highlight-indentation-mode t)
+(setq highlight-indentation-offset 4)
+(set-face-background 'highlight-indentation-face "#e3e3d3")
+(set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+
 (set-language-environment "Japanese")
-;;fonts
+;;fontjs
 (if (eq window-system 'ns) 
   (progn
 	(create-fontset-from-ascii-font "Source Code Pro-16:weight=normal:slant=normal" nil "menlokakugo")
@@ -55,16 +62,16 @@
 ;; Dired 
 ;; ディレクトリを開く場合バッファを増やさない
 (defadvice dired-find-file (around kill-dired-buffer activate)
-   (let ((before (current-buffer)))
-	    ad-do-it
-		    (when (eq major-mode 'dired-mode)
-			       (kill-buffer before))))
+		   (let ((before (current-buffer)))
+			 ad-do-it
+			 (when (eq major-mode 'dired-mode)
+			   (kill-buffer before))))
 ;; ディレクトリを上がる場合バッファを増やさない
 (defadvice dired-up-directory (around kill-up-dired-buffer activate)
-   (let ((before (current-buffer)))
-	    ad-do-it
-		    (when (eq major-mode 'dired-mode)
-			       (kill-buffer before))))
+		   (let ((before (current-buffer)))
+			 ad-do-it
+			 (when (eq major-mode 'dired-mode)
+			   (kill-buffer before))))
 
 ;;iswitchb
 ;; C-x bでバッファの一覧がニバッファに表示
@@ -94,26 +101,30 @@
   '(show-paren-mode t)
   '(tab-width 4))
 
-;; clojure
+;;;; clojure
+(require 'cider)
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (require 'ac-nrepl)
 (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-;(add-hook 'cider-mode-hook 'ac-nrepl-setup)
+(add-hook 'cider-mode-hook 'ac-nrepl-setup)
 (add-hook 'clojure-mode-hook 'cider-mode)
 (eval-after-load "auto-complete"
-				 '(add-to-list 'ac-modes 'cider-repl-mode))
+   '(add-to-list 'ac-modes 'cider-repl-mode))
+
 ;; pareditの設定
 (require 'paredit)
 (dolist (hook '(cider-repl-mode-hook
-				 clojure-mode-hook))
+				 clojure-mode-hook
+				 scheme-mode-hook))
   (add-hook hook 'paredit-mode))
 
 ;;CL
-(setq inferior-lisp-program "/usr/local/Cellar/sbcl/1.1.4/bin/sbcl")
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+;(setq inferior-lisp-program "/usr/local/bin/sbcl")
 ;; SLIMEがある場所をEmacsのロードパスに追加
-(add-to-list 'load-path "~/.emacs.d/slime")
+;(add-to-list 'load-path "~/.emacs.d/slime")
 ;; SLIMEを実行するときに自動的にロードさせる
+(require 'slime)
+(setq inferior-lisp-program "sbcl")
 (require 'slime-autoloads)
 ;; どのcontribパッケージを読み込むかの設定
 (slime-setup '(slime-repl slime-fancy slime-banner))
@@ -241,22 +252,6 @@
 			 (reftex-mode 1)
 			 (define-key reftex-mode-map (concat YaTeX-prefix ">") 'YaTeX-comment-region)
 			 (define-key reftex-mode-map (concat YaTeX-prefix "<") 'YaTeX-uncomment-region)))
-
-;;;;twitter
-(setq twittering-account-authorization 'authorized)
-(setq twittering-oauth-access-token-alist
-	  '(("oauth_token" . "129039695-7sTY5Yqf9isTJwHra7DEXityy1RePYZByrlh8om7")
-		("oauth_token_secret" . "TONDa9zIRK5m4ubcWqpjSbwl1Ko81kE4Nm2CXByQXfQjU")
-		("user_id" . "129039695")
-		("screen_name" . "12ashk")))
-;; 120秒おきに更新
-(setq twittering-timer-interval 120)
-;; API残数表示
-(setq twittering-display-remaining t)
-;; 表示方式の変更
-(setq twittering-status-format "%i %S(%s)%p, %@:
-	  %FILL{  %T // from %f%L%r%R}
-	  ")
 
 ;; setting for evil
 ;; scroll with C-u
