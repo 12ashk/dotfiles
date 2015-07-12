@@ -1,30 +1,45 @@
+set nocompatible
 if has('vim_starting')
 	set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#rc(expand('~/.vim/bundle/'))
+call neobundle#begin(expand('~/.vim/bundle/'))
+NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Let NeoBundle manage NeoBundle
-NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'banyan/recognize_charcode.vim'
 NeoBundle 'kana/vim-smartword'
 let g:echodoc_enable_at_startup = 1
 NeoBundle 'tpope/vim-surround'
-autocmd BufNewFile,BufRead *.cs set filetype=python
+" autocmd BufNewFile,BufRead *.cs set filetype=python
+NeoBundle "davidhalter/jedi-vim"
 NeoBundle 'scrooloose/syntastic.git'
-NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'Align'
+NeoBundle 'plasticboy/vim-markdown'
+NeoBundle 'kannokanno/previm'
+NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'scrooloose/nerdcommenter.git'
+NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/vimfiler.vim'
+NeoBundle 'itchyny/lightline.vim'
+call neobundle#end()
 
 " Vim-indent-guides
-NeoBundle "nathanaelkane/vim-indent-guides"
 let s:hooks = neobundle#get_hooks("vim-indent-guides")
+"let g:indent_guides_auto_colors=7
 function! s:hooks.on_source(bundle)
 	let g:indent_guides_guide_size = 1
 	IndentGuidesEnable
 endfunction
 
+" .md as markdown
+au BufRead,BufNewFile *.md set filetype=markdown
+
 " NERD_commenter.vim
-NeoBundle 'scrooloose/nerdcommenter.git'
 let g:NERDCreateDefaultMappings = 0
 let NERDSpaceDelims = 1
 nmap <Leader>/ <Plug>NERDCommenterToggle
@@ -34,15 +49,32 @@ nmap <leader>/9 <Plug>NERDCommenterToEOL
 vmap <Leader>/s <Plug>NERDCommenterSexy
 vmap <Leader>/b <Plug>NERDCommenterMinimal
 
+" ~/.pyenv/shimsを$PATHに追加
+let $PATH = "~/.pyenv/shims:".$PATH
+" DJANGO_SETTINGS_MODULE を自動設定
+NeoBundleLazy "lambdalisue/vim-django-support", {
+            \ "autoload": {
+            \   "filetypes": ["python", "python3", "djangohtml"]
+            \ }}
+
+NeoBundleLazy "lambdalisue/vim-pyenv", {
+            \ "depends": ['davidhalter/jedi-vim'],
+            \ "autoload": {
+            \   "filetypes": ["python", "python3", "djangohtml"]
+            \ }}
+
+
 "setting for vimfiler
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimfiler.vim'
 "vimデフォルトのエクスプローラをvimfilerで置き換える
 let g:vimfiler_as_default_explorer = 1
 ""セーフモードを無効にした状態で起動する
 let g:vimfiler_safe_mode_by_default = 0
 "現在開いているバッファのディレクトリを開く
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
+
+NeoBundleLazy 'vim-jp/cpp-vim', {
+            \ 'autoload' : {'filetypes' : 'cpp'}
+            \ }
 
 set nocompatible
 set smarttab
@@ -57,7 +89,8 @@ set hlsearch
 set showmatch
 set matchtime=1
 set showcmd
-set noexpandtab
+set expandtab
+set autoindent
 set softtabstop=0
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set number
@@ -81,11 +114,11 @@ colorschem desert
 
 set guioptions+=a
 if has('gui_running')
-	set mousemodel=popup
-	set nomousefocus
-	set mousehide
-	set background=dark
-	colorschem solarized
+    set mousemodel=popup
+    set nomousefocus
+    set mousehide
+    set background=dark
+    colorschem solarized
 endif
 
 filetype plugin indent on
@@ -96,19 +129,19 @@ set fileencodings=iso-2022-jp,utf-8,euc-jp
 set fileformats=unix,dos,mac
 " □とか○の文字があってもカーソル位置がずれないようにする
 if exists('&ambiwidth')
-	set ambiwidth=double
+    set ambiwidth=double
 endif
 function! InsertTabWrapper()
-	let col = col('.') - 1
-	if !col || getline('.')[col - 1] !~ '\k'
-		return "\<TAB>"
-	else
-		if pumvisible()
-			return "\<C-N>"
-		else
-			return "\<C-N>\<C-P>"
-		end
-	endif
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<TAB>"
+    else
+        if pumvisible()
+            return "\<C-N>"
+        else
+            return "\<C-N>\<C-P>"
+        end
+    endif
 endfunction
 
 """ keybind for neocomplcache
@@ -139,43 +172,42 @@ inoremap <C-f> <Right>
 inoremap <C-h> <Backspace>
 
 if has('lua') && ( (v:version == 703 && has('patch885')) || v:version == 704 )
-	NeoBundleLazy 'Shougo/neocomplete.vim', {
-				\ 'autoload': {
-				\   'insert': 1,
-				\ }}
-	let s:hooks = neobundle#get_hooks('neocomplete.vim')
-	function! s:hooks.on_source(bundle)
-		" Disable AutoComplPop.
-		let g:acp_enableAtStartup = 0
-		" Use neocomplete.
-		let g:neocomplete#enable_at_startup = 1
-		" Use smartcase.
-		let g:neocomplete#enable_smart_case = 1
-		" Set minimum syntax keyword length.
-		let g:neocomplete#sources#syntax#min_keyword_length = 3
-		let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-	endfunction
+    NeoBundleLazy 'Shougo/neocomplete.vim', {
+                \ 'autoload': {
+                \   'insert': 1,
+                \ }}
+    let s:hooks = neobundle#get_hooks('neocomplete.vim')
+    function! s:hooks.on_source(bundle)
+        " Disable AutoComplPop.
+        let g:acp_enableAtStartup = 0
+        " Use neocomplete.
+        let g:neocomplete#enable_at_startup = 1
+        " Use smartcase.
+        let g:neocomplete#enable_smart_case = 1
+        " Set minimum syntax keyword length.
+        let g:neocomplete#sources#syntax#min_keyword_length = 3
+        let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+    endfunction
 else
-	NeoBundleLazy 'Shougo/neocomplcache.vim', {
-				\ 'autoload': {
-				\   'insert': 1,
-				\ }}
-	let s:hooks = neobundle#get_hooks('neocomplcache.vim')
-	function! s:hooks.on_source(bundle)
-		" Disable AutoComplPop.
-		let g:acp_enableAtStartup = 0
-		" Use neocomplcache.
-		let g:neocomplcache_enable_at_startup = 1
-		" Use smartcase.
-		let g:neocomplcache_enable_smart_case = 1
-		" Set minimum syntax keyword length.
-		let g:neocomplcache_min_syntax_length = 3
-		let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-	endfunction
+    NeoBundleLazy 'Shougo/neocomplcache.vim', {
+                \ 'autoload': {
+                \   'insert': 1,
+                \ }}
+    let s:hooks = neobundle#get_hooks('neocomplcache.vim')
+    function! s:hooks.on_source(bundle)
+        " Disable AutoComplPop.
+        let g:acp_enableAtStartup = 0
+        " Use neocomplcache.
+        let g:neocomplcache_enable_at_startup = 1
+        " Use smartcase.
+        let g:neocomplcache_enable_smart_case = 1
+        " Set minimum syntax keyword length.
+        let g:neocomplcache_min_syntax_length = 3
+        let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+    endfunction
 endif
 
 """ Vim-LaTeX 
-NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
 let g:Tex_AutoFolding = 0
 let g:tex_flavor='latex'
 let g:Imap_UsePlaceHolders = 1
@@ -196,66 +228,65 @@ let g:Tex_ViewRule_pdf = '/usr/bin/open -a Preview.app'
 let g:Tex_ViewRule_dvi = '/usr/bin/open'
 
 "lightline
-NeoBundle 'itchyny/lightline.vim'
 let g:lightline = {
-			\ 'colorscheme': 'wombat',
-			\ 'mode_map': {'c': 'NORMAL'},
-			\ 'active': {
-			\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
-			\ },
-			\ 'component_function': {
-			\   'modified': 'MyModified',
-			\   'readonly': 'MyReadonly',
-			\   'fugitive': 'MyFugitive',
-			\   'filename': 'MyFilename',
-			\   'fileformat': 'MyFileformat',
-			\   'filetype': 'MyFiletype',
-			\   'fileencoding': 'MyFileencoding',
-			\   'mode': 'MyMode'
-			\ }
-			\ }
+            \ 'colorscheme': 'wombat',
+            \ 'mode_map': {'c': 'NORMAL'},
+            \ 'active': {
+            \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+            \ },
+            \ 'component_function': {
+            \   'modified': 'MyModified',
+            \   'readonly': 'MyReadonly',
+            \   'fugitive': 'MyFugitive',
+            \   'filename': 'MyFilename',
+            \   'fileformat': 'MyFileformat',
+            \   'filetype': 'MyFiletype',
+            \   'fileencoding': 'MyFileencoding',
+            \   'mode': 'MyMode'
+            \ }
+            \ }
 
 function! MyModified()
-	return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+    return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-	return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+    return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
 endfunction
 
 function! MyFilename()
-	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-				\  &ft == 'unite' ? unite#get_status_string() :
-				\  &ft == 'vimshell' ? vimshell#get_status_string() :
-				\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-				\ ('' != MyModified() ? ' ' . MyModified() : '')
+    return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+                \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+                \  &ft == 'unite' ? unite#get_status_string() :
+                \  &ft == 'vimshell' ? vimshell#get_status_string() :
+                \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
-	try
-		if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
-			return fugitive#head()
-		endif
-	catch
-	endtry
-	return ''
+    try
+        if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+            return fugitive#head()
+        endif
+    catch
+    endtry
+    return ''
 endfunction
 
 function! MyFileformat()
-	return winwidth(0) > 70 ? &fileformat : ''
+    return winwidth(0) > 70 ? &fileformat : ''
 endfunction
 
 function! MyFiletype()
-	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! MyFileencoding()
-	return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
 endfunction
 
 function! MyMode()
-	return winwidth(0) > 60 ? lightline#mode() : ''
+    return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 "end lightline setting
 

@@ -1,10 +1,10 @@
 ;; -*- mode: emacs-lisp; coding: utf-8; indent-tabs-mode: nil -*-
 ;; package management
-(add-to-list 'load-path "~/.emacs.d/elisp/")
 (require 'package)
-(add-to-list 'package-archives
-			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
+
 (when (not package-archive-contents)
   (package-refresh-contents))
 (dolist (p '(
@@ -25,18 +25,20 @@
  (when (not (package-installed-p p))
       (package-install p)))
 
-(require 'install-elisp)
-(setq install-elisp-repository-directory "~/.emacs.d/elisp/")
-
+;;(add-to-list 'load-path "~/.emacs.d/elisp/")
+;;(require 'install-elisp)
+;;(setq install-elisp-repository-directory "~/.emacs.d/elisp/")
+;;
 (require 'auto-complete-config)
 (ac-config-default)
 (setq ac-auto-start nil)
+(global-auto-complete-mode t)
 
 (add-to-list 'load-path "~/.emacs.d/elisp/themes/")
-(color-theme-initialize)
-(color-theme-solarized-dark)
-
-(global-auto-complete-mode t)
+(require 'color-theme)
+;;(setq color-theme-is-global t)
+;;(color-theme-initialize)
+;;(color-theme-solarized-dark)
 
 (require 'highlight-indentation)
 (setq highlight-indentation-mode t)
@@ -53,12 +55,6 @@
 	(add-to-list 'default-frame-alist '(font . "fontset-menlokakugo"))
 	(setq face-font-rescale-alist '((".*Hiragino.*" . 1.2) ))))
 
-;;;;key remapping
-;; set command as meta
-(setq ns-command-modifier (quote meta))
-;; set alt as super
-(setq ns-alternate-modifier (quote super))
-
 ;; Dired 
 ;; ディレクトリを開く場合バッファを増やさない
 (defadvice dired-find-file (around kill-dired-buffer activate)
@@ -72,18 +68,6 @@
 			 ad-do-it
 			 (when (eq major-mode 'dired-mode)
 			   (kill-buffer before))))
-
-;;iswitchb
-;; C-x bでバッファの一覧がニバッファに表示
-;; C-s，C-r でバッファの選択を切り替え． 
-;; C-n, C-p, C-f, C-bでもok
-(iswitchb-mode 1)
-(add-hook 'iswitchb-define-mode-map-hook
-		  (lambda ()
-			(define-key iswitchb-mode-map "\C-n" 'iswitchb-next-match)
-			(define-key iswitchb-mode-map "\C-p" 'iswitchb-prev-match)
-			(define-key iswitchb-mode-map "\C-f" 'iswitchb-next-match)
-			(define-key iswitchb-mode-map "\C-b" 'iswitchb-prev-match)))
 
 ;;括弧のハイライト
 (show-paren-mode
@@ -260,3 +244,25 @@
 (setq evil-toggle-key "C-_")
 (require 'evil)
 (evil-mode 1)
+
+
+(setq-default ispell-program-name "aspell")
+(eval-after-load "ispell"
+                 '(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+")))
+(setq-default ispell-program-name "/usr/local/bin/aspell")
+
+(require 'popwin)
+(setq display-buffer-function 'popwin:display-buffer)
+(setq popwin:popup-window-position 'bottom)
+(require 'google-translate)
+
+(global-set-key "\C-xt" 'google-translate-at-point)
+(global-set-key "\C-xT" 'google-translate-query-translate)
+
+;; 翻訳のデフォルト値を設定(ja -> en)（無効化は C-u する）
+(custom-set-variables
+  '(google-translate-default-source-language "ja")
+   '(google-translate-default-target-language "en"))
+
+;; google-translate.elの翻訳バッファをポップアップで表示させる
+(push '("*Google Translate*") popwin:special-display-config)
