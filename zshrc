@@ -54,8 +54,7 @@ setopt extended_history
 setopt share_history
 
 # Homebrew
-#export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/share:/usr/local/bin/python:/usr/texbin:$PATH
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/share:/usr/texbin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/local/share:/Library/local/texbin:$PATH
 typeset -U path cdpath fpath manpath
 typeset -xT SUDO_PATH sudo_path
 typeset -U sudo_path

@@ -1,3 +1,5 @@
+let $PATH = "~/.pyenv/shims:".$PATH
+
 set nocompatible
 if has('vim_starting')
 	set runtimepath+=~/.vim/bundle/neobundle.vim/
@@ -5,6 +7,20 @@ endif
 
 call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
+
+function! IncludePath(path)
+    define delimiter depends on platform
+    if has('win16') || has('win32') || has('win64')
+        let delimiter = ";"
+    else
+        let delimiter = ":"
+    endif
+    let pathlist = split($PATH, delimiter)
+    if isdirectory(a:path) && index(pathlist, a:path) ==
+        -1
+        let $PATH=a:path.delimiter.$PATH
+    endif
+endfunction
 
 " Let NeoBundle manage NeoBundle
 NeoBundle 'banyan/recognize_charcode.vim'
@@ -26,15 +42,34 @@ NeoBundle 'git://git.code.sf.net/p/vim-latex/vim-latex'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler.vim'
 NeoBundle 'itchyny/lightline.vim'
+NeoBundle "h1mesuke/unite-outline"
+NeoBundle 'Shougo/unite-outline'
+
+NeoBundleLazy "davidhalter/jedi-vim", {
+      \ "autoload": {
+      \   "filetypes": ["python", "python3"]
+      \ }}
+
+NeoBundleLazy "lambdalisue/vim-pyenv", {
+            \ "depends": ['davidhalter/jedi-vim'],
+            \ "autoload": {
+            \   "filetypes": ["python", "python3"]
+            \ }}
+
+
 call neobundle#end()
 
+"Unite Outline
+let g:unite_split_rule = 'botright'
+noremap ,u <ESC>:Unite -vertical -winwidth=30 outline<Return>
+
 " Vim-indent-guides
+let g:indent_guides_enable_on_vim_startup=1
 let s:hooks = neobundle#get_hooks("vim-indent-guides")
-"let g:indent_guides_auto_colors=7
-function! s:hooks.on_source(bundle)
-	let g:indent_guides_guide_size = 1
-	IndentGuidesEnable
-endfunction
+let g:indent_guides_auto_colors=0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#444433 ctermbg=black
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#333344 ctermbg=darkgray
+let g:indent_guides_guide_size=1
 
 " .md as markdown
 au BufRead,BufNewFile *.md set filetype=markdown
@@ -48,20 +83,6 @@ nmap <Leader>/a <Plug>NERDCommenterAppend
 nmap <leader>/9 <Plug>NERDCommenterToEOL
 vmap <Leader>/s <Plug>NERDCommenterSexy
 vmap <Leader>/b <Plug>NERDCommenterMinimal
-
-" ~/.pyenv/shimsを$PATHに追加
-let $PATH = "~/.pyenv/shims:".$PATH
-" DJANGO_SETTINGS_MODULE を自動設定
-NeoBundleLazy "lambdalisue/vim-django-support", {
-            \ "autoload": {
-            \   "filetypes": ["python", "python3", "djangohtml"]
-            \ }}
-
-NeoBundleLazy "lambdalisue/vim-pyenv", {
-            \ "depends": ['davidhalter/jedi-vim'],
-            \ "autoload": {
-            \   "filetypes": ["python", "python3", "djangohtml"]
-            \ }}
 
 
 "setting for vimfiler
@@ -289,5 +310,6 @@ function! MyMode()
     return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
 "end lightline setting
+"
 
 NeoBundleCheck
