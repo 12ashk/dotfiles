@@ -1,8 +1,8 @@
-let $PATH = "~/.pyenv/shims:".$PATH
+"let $PATH = "~/.pyenv/shims:".$PATH
 
+syntax on
 set nocompatible
 inoremap <silent> jj <ESC>
-inoremap <silent> っj <ESC>
 set smarttab
 set cindent
 set smartcase
@@ -10,6 +10,7 @@ set ignorecase
 set wrapscan
 set tabstop=4
 set shiftwidth=4
+set expandtab
 set incsearch
 set hlsearch
 set showmatch
@@ -32,6 +33,9 @@ set mouse=a
 set ttymouse=xterm2
 set backspace=2
 syntax on
+" 改行コードの自動認識
+set fileformats=unix,dos,mac
+set ambiwidth=double
 let g:echodoc_enable_at_startup = 1
 
 " プラグインが実際にインストールされるディレクトリ
@@ -39,34 +43,34 @@ let s:dein_dir = expand('~/.cache/dein')
 " dein.vim 本体
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 " dein.vim がなければ github から落としてくる
-    if &runtimepath !~# '/dein.vim'
-if !isdirectory(s:dein_repo_dir)
-    execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+if &runtimepath !~# '/dein.vim'
+    if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
     endif
     execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 
     " 設定開始
     if dein#load_state(s:dein_dir)
-call dein#begin(s:dein_dir)
+        call dein#begin(s:dein_dir)
 
-    " プラグインリストを収めた TOML ファイル
-    " 予め TOML ファイル（後述）を用意しておく
-    let g:rc_dir    = expand('~/.vim/rc')
-    let s:toml      = g:rc_dir . '/dein.toml'
-    let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
+        " プラグインリストを収めた TOML ファイル
+        " 予め TOML ファイル（後述）を用意しておく
+        let g:rc_dir    = expand('~/.vim/rc')
+        let s:toml      = g:rc_dir . '/dein.toml'
+        let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
 
-    " TOML を読み込み、キャッシュしておく
-    call dein#load_toml(s:toml,      {'lazy': 0})
-    call dein#load_toml(s:lazy_toml, {'lazy': 1})
+        " TOML を読み込み、キャッシュしておく
+        call dein#load_toml(s:toml,      {'lazy': 0})
+        call dein#load_toml(s:lazy_toml, {'lazy': 1})
 
-    " 設定終了
-    call dein#end()
-call dein#save_state()
+        " 設定終了
+        call dein#end()
+        call dein#save_state()
     endif
 
     " もし、未インストールものものがあったらインストール
     if dein#check_install()
-call dein#install()
+        call dein#install()
     endif
 
 
@@ -102,42 +106,36 @@ call dein#install()
 
     set guioptions+=a
     if has('gui_running')
-    set mousemodel=popup
-    set nomousefocus
-    set mousehide
-    set background=dark
-    colorschem solarized
+        set mousemodel=popup
+        set nomousefocus
+        set mousehide
+        set background=dark
+        colorschem solarized
     endif
 
     filetype plugin indent on
     set fileencoding=utf-8
     set fileencodings=iso-2022-jp,utf-8,euc-jp
 
-    " 改行コードの自動認識
-    set fileformats=unix,dos,mac
-    " □とか○の文字があってもカーソル位置がずれないようにする
-    if exists('&ambiwidth')
-    set ambiwidth=double
-    endif
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-    return "\<TAB>"
-    else
-if pumvisible()
-    return "\<C-N>"
-    else
-    return "\<C-N>\<C-P>"
-    end
-    endif
+    function! InsertTabWrapper()
+        let col = col('.') - 1
+        if !col || getline('.')[col - 1] !~ '\k'
+            return "\<TAB>"
+        else
+            if pumvisible()
+                return "\<C-N>"
+            else
+                return "\<C-N>\<C-P>"
+            end
+        endif
     endfunction
-
-    """ keybind for neocomplcache
-    " <TAB>: completion
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    " Plugin key-mappings.
-    inoremap <expr><C-g>     neocomplete#undo_completion()
-inoremap <expr><C-l>     neocomplete#complete_common_string()
+    "
+    "    """ keybind for neocomplcache
+    "    " <TAB>: completion
+    "    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    "    " Plugin key-mappings.
+    "    inoremap <expr><C-g>     neocomplete#undo_completion()
+    "inoremap <expr><C-l>     neocomplete#complete_common_string()
 
     " new line with Enter key
     noremap <CR><CR> o<ESC>
@@ -181,64 +179,64 @@ inoremap <expr><C-l>     neocomplete#complete_common_string()
 
     "lightline
     let g:lightline = {
-        \ 'colorscheme': 'wombat',
-        \ 'mode_map': {'c': 'NORMAL'},
-        \ 'active': {
-            \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+                \ 'colorscheme': 'wombat',
+                \ 'mode_map': {'c': 'NORMAL'},
+                \ 'active': {
+                \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
                 \ },
-        \ 'component_function': {
-            \   'modified': 'MyModified',
-            \   'readonly': 'MyReadonly',
-            \   'fugitive': 'MyFugitive',
-            \   'filename': 'MyFilename',
-            \   'fileformat': 'MyFileformat',
-            \   'filetype': 'MyFiletype',
-            \   'fileencoding': 'MyFileencoding',
-            \   'mode': 'MyMode'
+                \ 'component_function': {
+                \   'modified': 'MyModified',
+                \   'readonly': 'MyReadonly',
+                \   'fugitive': 'MyFugitive',
+                \   'filename': 'MyFilename',
+                \   'fileformat': 'MyFileformat',
+                \   'filetype': 'MyFiletype',
+                \   'fileencoding': 'MyFileencoding',
+                \   'mode': 'MyMode'
                 \ }
-        \ }
+                \ }
 
-function! MyModified()
-    return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+    function! MyModified()
+        return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
     endfunction
 
-function! MyReadonly()
-    return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
+    function! MyReadonly()
+        return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'x' : ''
     endfunction
 
-function! MyFilename()
-    return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-    \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-            \  &ft == 'unite' ? unite#get_status_string() :
-            \  &ft == 'vimshell' ? vimshell#get_status_string() :
-            \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-    \ ('' != MyModified() ? ' ' . MyModified() : '')
+    function! MyFilename()
+        return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+                    \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+                    \  &ft == 'unite' ? unite#get_status_string() :
+                    \  &ft == 'vimshell' ? vimshell#get_status_string() :
+                    \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                    \ ('' != MyModified() ? ' ' . MyModified() : '')
     endfunction
 
-function! MyFugitive()
-    try
-    if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
-return fugitive#head()
-    endif
-    catch
-    endtry
-    return ''
+    function! MyFugitive()
+        try
+            if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+                return fugitive#head()
+            endif
+        catch
+        endtry
+        return ''
     endfunction
 
-function! MyFileformat()
-    return winwidth(0) > 70 ? &fileformat : ''
+    function! MyFileformat()
+        return winwidth(0) > 70 ? &fileformat : ''
     endfunction
 
-function! MyFiletype()
-    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+    function! MyFiletype()
+        return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
     endfunction
 
-function! MyFileencoding()
-    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+    function! MyFileencoding()
+        return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
     endfunction
 
-function! MyMode()
-    return winwidth(0) > 60 ? lightline#mode() : ''
+    function! MyMode()
+        return winwidth(0) > 60 ? lightline#mode() : ''
     endfunction
     "end lightline setting
     "
